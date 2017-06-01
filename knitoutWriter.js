@@ -1,0 +1,128 @@
+// basic writer
+var knitoutWriter = function(){
+	
+	this.headers = [];	  // saves headers in addHeader order
+	this.operations = []; // saves operations in queued order
+
+	// for error checking perhaps
+	this.carriers = [];
+};
+
+// function that queues header information to header list
+knitoutWriter.prototype.addHeader = function(name, value){
+	
+	// Machine
+	// Gauge
+	// Carriers
+	// Yarn-C
+	// Position
+	// X-
+	
+	if( name !== undefined	&& value !== undefined) {
+		this.headers.push(';;'+name.toString()+': '+value.toString());
+	}
+
+};
+
+// helper to return carriers as a string
+let getCarriers = function(carriers, moreCarriers){
+
+	let carrierStr = "";
+	if( !Array.isArray(carriers)){
+		carrierStr = carrierStr + carriers.toString();
+	}
+	else{
+		carrierStr = carrierStr + carriers.join(" ");
+	}
+	carrierStr = carrierStr + " " +  moreCarriers.join(" ");
+
+	return carrierStr;
+	// returns a string of carriers
+};
+
+// helper to return bed-needle as a string
+let getBedNeedle = function(at){
+
+	if(  typeof(at) === 'string' ){
+		return at;
+	}
+	else {
+		return at.bed+at.needle;
+	}
+	// returns a string of bed-needle
+};
+
+
+knitoutWriter.prototype.in = function(carriers, ...moreCarriers){
+
+	this.operations.push('in ' + getCarriers(carriers, moreCarriers)); 
+
+};
+
+knitoutWriter.prototype.inhook = function(dir, at, carriers, ...moreCarriers){
+
+	this.operations.push('inhook ' + getBedNeedle(at) + ' ' + getCarriers(carriers, moreCarriers));
+};
+
+
+knitoutWriter.prototype.releasehook = function(carriers, ...moreCarriers){
+	
+	this.operations.push('releasehook ' + getCarriers(carriers, moreCarriers));
+
+};
+
+knitoutWriter.prototype.out = function(carriers, ...moreCarriers){
+	this.operations.push('out ' + getCarriers(carriers, moreCarriers));
+};
+
+knitoutWriter.prototype.outhook = function(carriers, ...moreCarriers){
+	this.operations.push('outhook ' + getCarriers(carriers, moreCarriers));
+};
+
+knitoutWriter.prototype.stitch = function( before, after){
+	this.operations.push('stitch ' + before + ' ' + after);
+};
+
+knitoutWriter.prototype.rack = function(rack){
+	this.operations.push('rack ' + rack);
+};
+
+knitoutWriter.prototype.knit = function(dir, at , carriers, ...moreCarriers) {
+	// if len(carriers) > 1, add comment ;knit together
+	// dir = '+', '-'
+	console.assert( (dir == '+' || dir == '-'), "valid directions are '+' or '-'.");
+	this.operations.push('knit ' + dir + ' '+ getBedNeedle(at) + ' ' + getCarriers(carriers, moreCarriers));
+};
+
+knitoutWriter.prototype.tuck  = function(dir, at , carriers, ...moreCarriers) {
+
+	this.operations.push('tuck ' + dir + ' ' + getBedNeedle(at) + ' ' +getCarriers(carriers, moreCarriers));
+};
+
+knitoutWriter.prototype.split = function(dir, from, to, carriers, ...moreCarriers) {
+	this.operations.push('split ' + dir + ' '+ getBedNeedle(from) + ' ' + getBedNeedle(to) + ' ' + getCarriers(carriers, moreCarriers));
+};
+
+
+knitoutWriter.prototype.miss = function(dir, at, carriers, ...moreCarriers){
+	this.operations.push('miss ' + dir + ' '+ getBedNeedle(at) + ' ' + getCarriers(carriers, moreCarriers));
+};
+
+knitoutWriter.prototype.pause = function(comment){
+	this.operations.push('pause'+' ;'+comment.toString());
+};
+
+
+knitoutWriter.prototype.write = function(filename){
+	let fs = require('fs');
+	let version = ';!knitout-2';
+	let content = version + '\n' +
+				  this.headers.join('\n') + '\n' + 
+				  this.operations.join('\n') + '\n';
+	fs.writeFileSync(filename, content); //default is utf8 
+	return content; 
+};
+
+module.exports = knitoutWriter;
+
+
