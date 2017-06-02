@@ -25,7 +25,9 @@ knitoutWriter.prototype.addHeader = function(name, value){
 };
 
 // helper to return carriers as a string
-let getCarriers = function(carriers, moreCarriers){
+let getCarriers = function(carriers){
+
+    if ( carriers === undefined ) return "";
 
 	let carrierStr = "";
 	if( !Array.isArray(carriers)){
@@ -34,7 +36,6 @@ let getCarriers = function(carriers, moreCarriers){
 	else{
 		carrierStr = carrierStr + carriers.join(" ");
 	}
-	carrierStr = carrierStr + " " +  moreCarriers.join(" ");
 
 	return carrierStr;
 	// returns a string of carriers
@@ -53,30 +54,30 @@ let getBedNeedle = function(at){
 };
 
 
-knitoutWriter.prototype.in = function(carriers, ...moreCarriers){
+knitoutWriter.prototype.in = function(...carriers){
 
-	this.operations.push('in ' + getCarriers(carriers, moreCarriers)); 
+	this.operations.push('in ' + getCarriers(carriers)); 
 
 };
 
-knitoutWriter.prototype.inhook = function(dir, at, carriers, ...moreCarriers){
+knitoutWriter.prototype.inhook = function(dir, at, ...carriers){
 
-	this.operations.push('inhook ' + getBedNeedle(at) + ' ' + getCarriers(carriers, moreCarriers));
+	this.operations.push('inhook ' + getBedNeedle(at) + ' ' + getCarriers(carriers));
 };
 
 
-knitoutWriter.prototype.releasehook = function(carriers, ...moreCarriers){
+knitoutWriter.prototype.releasehook = function(...carriers){
 	
-	this.operations.push('releasehook ' + getCarriers(carriers, moreCarriers));
+	this.operations.push('releasehook ' + getCarriers(carriers));
 
 };
 
-knitoutWriter.prototype.out = function(carriers, ...moreCarriers){
-	this.operations.push('out ' + getCarriers(carriers, moreCarriers));
+knitoutWriter.prototype.out = function(...carriers){
+	this.operations.push('out ' + getCarriers(carriers));
 };
 
-knitoutWriter.prototype.outhook = function(carriers, ...moreCarriers){
-	this.operations.push('outhook ' + getCarriers(carriers, moreCarriers));
+knitoutWriter.prototype.outhook = function(...carriers){
+	this.operations.push('outhook ' + getCarriers(carriers));
 };
 
 knitoutWriter.prototype.stitch = function( before, after){
@@ -87,25 +88,25 @@ knitoutWriter.prototype.rack = function(rack){
 	this.operations.push('rack ' + rack);
 };
 
-knitoutWriter.prototype.knit = function(dir, at , carriers, ...moreCarriers) {
+knitoutWriter.prototype.knit = function(dir, at , ...carriers) {
 	// if len(carriers) > 1, add comment ;knit together
 	// dir = '+', '-'
 	console.assert( (dir == '+' || dir == '-'), "valid directions are '+' or '-'.");
-	this.operations.push('knit ' + dir + ' '+ getBedNeedle(at) + ' ' + getCarriers(carriers, moreCarriers));
+	this.operations.push('knit ' + dir + ' '+ getBedNeedle(at) + ' ' + getCarriers(carriers));
 };
 
-knitoutWriter.prototype.tuck  = function(dir, at , carriers, ...moreCarriers) {
+knitoutWriter.prototype.tuck  = function(dir, at , ...carriers) {
 
-	this.operations.push('tuck ' + dir + ' ' + getBedNeedle(at) + ' ' +getCarriers(carriers, moreCarriers));
+	this.operations.push('tuck ' + dir + ' ' + getBedNeedle(at) + ' ' +getCarriers(carriers));
 };
 
-knitoutWriter.prototype.split = function(dir, from, to, carriers, ...moreCarriers) {
-	this.operations.push('split ' + dir + ' '+ getBedNeedle(from) + ' ' + getBedNeedle(to) + ' ' + getCarriers(carriers, moreCarriers));
+knitoutWriter.prototype.split = function(dir, from, to, ...carriers) {
+	this.operations.push('split ' + dir + ' '+ getBedNeedle(from) + ' ' + getBedNeedle(to) + ' ' + getCarriers(carriers));
 };
 
 
-knitoutWriter.prototype.miss = function(dir, at, carriers, ...moreCarriers){
-	this.operations.push('miss ' + dir + ' '+ getBedNeedle(at) + ' ' + getCarriers(carriers, moreCarriers));
+knitoutWriter.prototype.miss = function(dir, at, ...carriers){
+	this.operations.push('miss ' + dir + ' '+ getBedNeedle(at) + ' ' + getCarriers(carriers));
 };
 
 knitoutWriter.prototype.pause = function(comment){
@@ -120,7 +121,7 @@ knitoutWriter.prototype.write = function(filename){
 				  this.headers.join('\n') + '\n' + 
 				  this.operations.join('\n') + '\n';
 	fs.writeFileSync(filename, content); //default is utf8 
-	return content; 
+    return content; 
 };
 
 module.exports = knitoutWriter;
