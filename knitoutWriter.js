@@ -27,7 +27,7 @@ knitoutWriter.prototype.addHeader = function(name, value){
 // helper to return carriers as a string
 let getCarriers = function(carriers){
 
-    if ( carriers === undefined ) return "";
+	if ( carriers === undefined ) return "";
 
 	let carrierStr = "";
 	if( !Array.isArray(carriers)){
@@ -60,9 +60,9 @@ knitoutWriter.prototype.in = function(...carriers){
 
 };
 
-knitoutWriter.prototype.inhook = function(dir, at, ...carriers){
+knitoutWriter.prototype.inhook = function(...carriers){
 
-	this.operations.push('inhook ' + getBedNeedle(at) + ' ' + getCarriers(carriers));
+	this.operations.push('inhook '	+ getCarriers(carriers));
 };
 
 
@@ -104,7 +104,6 @@ knitoutWriter.prototype.split = function(dir, from, to, ...carriers) {
 	this.operations.push('split ' + dir + ' '+ getBedNeedle(from) + ' ' + getBedNeedle(to) + ' ' + getCarriers(carriers));
 };
 
-
 knitoutWriter.prototype.miss = function(dir, at, ...carriers){
 	this.operations.push('miss ' + dir + ' '+ getBedNeedle(at) + ' ' + getCarriers(carriers));
 };
@@ -113,6 +112,20 @@ knitoutWriter.prototype.pause = function(comment){
 	this.operations.push('pause'+' ;'+comment.toString());
 };
 
+// xfer -> split without yarn, but supported in knitout
+knitoutWriter.prototype.xfer = function(from, to) {
+	this.operations.push('xfer ' + getBedNeedle(from) + ' ' + getBedNeedle(to));
+};
+
+// drop -> knit without yarn, but supported in knitout
+knitoutWriter.prototype.drop = function(at) {
+	this.operations.push('drop ' + getBedNeedle(at));
+};
+
+// amiss -> tuck without yarn, but supported in knitout
+knitoutWriter.prototype.amiss = function(at) {
+	this.operations.push('amiss ' + getBedNeedle(at));
+};
 
 knitoutWriter.prototype.write = function(filename){
 	let fs = require('fs');
@@ -121,7 +134,7 @@ knitoutWriter.prototype.write = function(filename){
 				  this.headers.join('\n') + '\n' + 
 				  this.operations.join('\n') + '\n';
 	fs.writeFileSync(filename, content); //default is utf8 
-    return content; 
+	return content; 
 };
 
 module.exports = knitoutWriter;
