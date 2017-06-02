@@ -63,6 +63,7 @@ function checkBedNeedle( at ) {
 		}
 		else {
 			let at_arr = Object.keys(at).map(function (key) { return at[key]; });
+
 			if( typeof(at_arr[0]) !== 'string' ){
 				console.error("ERROR: BedNeedle invalid '"+at+"', must be [ String(bed), Number(needle)]");
 				return false;
@@ -183,8 +184,6 @@ knitoutWriter.prototype.outhook = function(...carriers){
 
 knitoutWriter.prototype.stitch = function( before, after){
 
-	before = Number(before);
-	after  = Number(after);
 
 	checkNumeric(before);
 	checkNumeric(after);
@@ -284,15 +283,23 @@ knitoutWriter.prototype.pause = function(comment){
 };
 
 knitoutWriter.prototype.write = function(filename){
-	let fs = require('fs');
 	let version = ';!knitout-2';
 	let content = version + '\n' +
-				  this.headers.join('\n') + '\n' + 
-				  this.operations.join('\n') + '\n';
-	fs.writeFileSync(filename, content); //default is utf8 
+		this.headers.join('\n') + '\n' + 
+		this.operations.join('\n') + '\n';
+	try{
+		let fs = require('fs');
+		fs.writeFileSync(filename, content); //default is utf8 
+	} 
+	catch(e){
+		console.warn("Can't load 'fs'. Did not write file.");
+	}
 	return content; 
 };
 
-module.exports = knitoutWriter;
+// browser-compatibility
+if(typeof(module) !== 'undefined'){
+	module.exports = knitoutWriter;
+}
 
 
