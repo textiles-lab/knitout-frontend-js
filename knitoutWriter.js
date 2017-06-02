@@ -4,6 +4,8 @@ var knitoutWriter = function(){
 	this.headers = [];	  // saves headers in addHeader order
 	this.operations = []; // saves operations in queued order
 
+	// lowercase entries of expected headers
+	this.validHeaders = ['machine', 'gauge', 'carriers', 'position'];
 	// for error checking perhaps
 	this.carriers = [];
 };
@@ -11,15 +13,20 @@ var knitoutWriter = function(){
 // function that queues header information to header list
 knitoutWriter.prototype.addHeader = function(name, value){
 	
-	// Machine
-	// Gauge
-	// Carriers
-	// Yarn-C
-	// Position
-	// X-
-	
 	if( name !== undefined	&& value !== undefined) {
+	
+		if(name.toString().toLowerCase().startsWith('x-')){
+		
+			console.warn('Warning: extension  header "' + name.toString() + '", may not be supported on target machine.');
+		}
+		else if(this.validHeaders.indexOf(name.toString().toLowerCase()) < 0){
+			console.warn('Warning: unknown header name "' + name.toString() + '".');
+		}
+		
 		this.headers.push(';;'+name.toString()+': '+value.toString());
+	}
+	else{ 
+		console.warn('Warning: invalid header name or value, did not add header.');
 	}
 
 };
@@ -132,7 +139,9 @@ knitoutWriter.prototype.comment = function( str ){
 
 	let multi = str.split('\n');
 	multi.forEach(function(entry){
+		// cannot add header comments with comment
 		while(entry.startsWith(';')){
+			console.warn('Warning: comment starts with ; use addHeader for adding header comments.');
 			entry = entry.substr(1, entry.length);
 		}
 		this.operations.push(';' + entry.toString());
