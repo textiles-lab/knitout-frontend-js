@@ -127,6 +127,18 @@ knitoutWriter.prototype.amiss = function(at) {
 	this.operations.push('amiss ' + getBedNeedle(at));
 };
 
+// add comments to knitout 
+knitoutWriter.prototype.comment = function( str ){
+
+	let multi = str.split('\n');
+	multi.forEach(function(entry){
+		while(entry.startsWith(';')){
+			entry = entry.substr(1, entry.length);
+		}
+		this.operations.push(';' + entry.toString());
+	}, this);
+};
+
 knitoutWriter.prototype.write = function(filename){
 	let fs = require('fs');
 	let version = ';!knitout-2';
