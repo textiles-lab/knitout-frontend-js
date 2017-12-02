@@ -10,9 +10,9 @@ In the table below:
 
 * `direction`  specifies the direction in which the operation is performed. Legal values include **"+"** indicating increasing needle number direction or **"-"** indicating decreasing needle number direction.
 
-* `bed+needle` is an alpha-numeric value that specifies the bed and needle number. Legal values for `bed` are (**f**)ront, (**b**)ack, (**f**)ront(**s**)lider, (**b**)ack(**s**)lider. Needle is a Number value within the range supported by the machine. "fs10", for example, specifies front-bed slider 10, "b20" specifies back-bed needle 20.
+* `bed+needle` is an alpha-numeric value that specifies the bed and needle number. Legal values for `bed` are (**f**)ront, (**b**)ack, (**h**)olding (**f**)ront, (**h**)olding(**b**)ack. Needle is a Number value within the range supported by the machine. "hf10", for example, specifies front-bed slider or holding location 10, "b20" specifies back-bed needle 20. The front-end also allows specifying bed needles as {bed:`value`, needle: `value`} or [`bed`,`needle`].
 
-Function names are identical to knitout opcodes. Currently, the frontend supports:
+All knitout opcodes are supported as a front-end function. Currently, the frontend supports:
 
 Function | Arguments | Example | Description
 --- | --- | --- | ---
@@ -36,4 +36,4 @@ comment| String | comment("This is a \n multi-line comment") | Insert comments i
 
 See [knitiout extensions](https://textiles-lab.github.io/knitout/extensions.html) for extensions that can be added as 'headers'. See [knitout specification](https://textiles-lab.github.io/knitout/knitout.html) for further details.
 
-See hello_world.js and sample.js for example usage.
+See hello_world.js for example usage.
