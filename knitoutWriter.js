@@ -34,7 +34,7 @@ function checkCarriers( carriers ) {
 function checkBedNeedle( at ) {
 	
 	if( typeof(at) === 'string' ){
-		if(at.startsWith('hf') || at.startsWith('hb')){
+		if(at.startsWith('fs') || at.startsWith('bs')){
 			if( Number.isInteger( Number(at.substr(2, at.length)) ) ){
 				return true;
 			}
@@ -49,7 +49,7 @@ function checkBedNeedle( at ) {
 			return false;
 		}
 		else{
-			console.error("ERROR: Bed invalid '"+at+"', must be 'f','b','hf','hb'");
+			console.error("ERROR: Bed invalid '"+at+"', must be 'f','b','fs','bs'");
 			return false;
 		}
 	}
@@ -74,9 +74,9 @@ function checkBedNeedle( at ) {
 					console.error("ERROR: BedNeedle invalid '"+at+"', must be [ String(bed), Number(needle)]");
 					return false;
 				}
-				if( at_arr[0] != 'f' &&  at_arr[0] != 'b' &&  at_arr[0] != 'hb' && at_arr[0] != 'hf' ){
+				if( at_arr[0] != 'f' &&  at_arr[0] != 'b' &&  at_arr[0] != 'fs' && at_arr[0] != 'bs' ){
 				
-					console.error("ERROR: Bed invalid '"+ at_arr[0] +"', must be 'f','b','hf','hb'");
+					console.error("ERROR: Bed invalid '"+ at_arr[0] +"', must be 'f','b','fs','bs'");
 					return false;
 				}
 			}
