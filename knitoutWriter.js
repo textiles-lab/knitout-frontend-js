@@ -191,6 +191,13 @@ knitoutWriter.prototype.stitch = function( before, after){
 	this.operations.push('stitch ' + before.toString() + ' ' + after.toString());
 };
 
+knitoutWriter.prototype.stitchNumber = function( stitchNumber){
+
+	stitchNumber = Number(stitchNumber);
+	checkNumeric(stitchNumber);
+	this.operations.push('x-stitch-number ' + stitchNumber.toString());
+};
+
 knitoutWriter.prototype.rack = function(rack){
 	
 	rack = Number(rack);
