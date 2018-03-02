@@ -10,7 +10,7 @@ In the table below:
 
 * `direction`  specifies the direction in which the operation is performed. Legal values include **"+"** indicating increasing needle number direction or **"-"** indicating decreasing needle number direction.
 
-* `bed+needle` is an alpha-numeric value that specifies the bed and needle number. Legal values for `bed` are (**f**)ront, (**b**)ack, (**h**)olding (**f**)ront, (**h**)olding(**b**)ack. Needle is a Number value within the range supported by the machine. "hf10", for example, specifies front-bed slider or holding location 10, "b20" specifies back-bed needle 20. The front-end also allows specifying bed needles as {bed:`value`, needle: `value`} or [`bed`,`needle`].
+* `bed+needle` is an alpha-numeric value that specifies the bed and needle number. Legal values for `bed` are (**f**)ront, (**b**)ack,  (**f**)ront(**s**)lider, (**b**)ack(**s**)lider. Needle is a Number value within the range supported by the machine. "fs10", for example, specifies front-bed slider location 10, "b20" specifies back-bed needle 20. The front-end also allows specifying bed needles as {bed:`value`, needle: `value`} or [`bed`,`needle`].
 
 All knitout opcodes are supported as a front-end function. Currently, the frontend supports:
 
