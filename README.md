@@ -24,6 +24,8 @@ k.out("B");
 k.write("out.k");
 ```
 
+When you create a ```Writer``` you are *required* to supply a "carriers" list in the options.
+
 
 In the table below:
 
