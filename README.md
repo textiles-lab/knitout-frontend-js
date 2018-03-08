@@ -47,7 +47,7 @@ addHeader | `name`(String),`value`(String) |  addHeader('Machine', 'SWGXYZ')| Ad
 in  | `carriers` | in("5") | Bring in yarn carriers
 inhook | `carriers` | inhook("B") | Bring in yarn carriers using the yarn inserting hook
 releasehook    | `carriers` | releasehook("5") | Release the yarn inserting hook used to bring in the given yarn carriers
-out | `carriers` | out([6]) | Take out yarn carrier
+out | `carriers` | out("6") | Take out yarn carrier
 outhook | `carriers` | outhook("5") | Take out yarn carrier with yarn inserting hook
 stitch | `before`(Number) `after`(Number) | stitch(25,40) | Before forming the loop, pull needle by `before` machine units, after forming the loop by `after` machine units. *Not well-supported by the back-end currently*.
 stitchNumber|`index`(Number)  | stitchNumber(5) | Explicit function for using stitch number extension that reads stitch values at `index` from a table. See [extensions](https://textiles-lab.github.io/knitout/extensions.html) for details.
