@@ -1,16 +1,15 @@
 // import the knitoutWriter code and instantiate it as an object
-var knitoutWriter = require('./knitoutWriter');
-k = new knitoutWriter();
+var knitout = require('./knitout');
+k = new knitout.Writer({carriers:["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]});
 
 // add some headers relevant to this job
 k.addHeader('Machine','SWGXYZ');
 k.addHeader('Gauge','15');
-k.addHeader('Carriers', '1');
 
 // swatch variables
 var height = 10;
 var width = 10;
-var carrier = 6;
+var carrier = "6";
 
 // bring in carrier using yarn inserting hook
 k.inhook(carrier); 

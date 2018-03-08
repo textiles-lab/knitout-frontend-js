@@ -6,7 +6,7 @@ A javascript wrapper for all operations supported by knitout with basic error an
 
 In the table below:
 
-* `carriers`  specify the yarn-carriers in use. These are specified as a positive integer Number value or Array. Multiple yarn carriers can be used for e.g., in plating.
+* `carriers`  specify the yarn-carriers in use. These are specified as a string or an Array of strings. Multiple yarn carriers can be used to make one stitch ("plating").
 
 * `direction`  specifies the direction in which the operation is performed. Legal values include **"+"** indicating increasing needle number direction or **"-"** indicating decreasing needle number direction.
 
