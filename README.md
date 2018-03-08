@@ -6,7 +6,7 @@ A javascript wrapper for all operations supported by knitout with basic error an
 Very simple example rectangle:
 ```javascript
 const knitout = require('knitout');
-let k = knitout.Writer({carriers:["A", "B", "C"]});
+let k = new knitout.Writer({carriers:["A", "B", "C"]});
 
 k.in("B");
 
