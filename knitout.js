@@ -68,7 +68,7 @@ Writer.prototype.addHeader = function(name, value) {
 Writer.prototype.addRawOperation = function( operation ){
 	console.warn("Warning: operation added to list as is(string), no error checking performed.");
 	this._operations.push(operation);
-}
+};
 
 // helper to return carriers as a string
 let getCarriers = function(carriers){
