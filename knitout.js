@@ -63,6 +63,13 @@ Writer.prototype.addHeader = function(name, value) {
 	this._headers.push(';;' + name + ': ' + value);
 };
 
+// escape hatch to dump your custom instruction to knitout
+// if you know what you are doing
+Writer.prototype.addRawOperation = function( operation ){
+	console.warn("Warning: operation added to list as is(string), no error checking performed.");
+	this._operations.push(operation);
+}
+
 // helper to return carriers as a string
 let getCarriers = function(carriers){
 
