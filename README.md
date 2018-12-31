@@ -61,6 +61,8 @@ drop| `bed+needle`| drop("f10") | Drop loops from `bed+needle`.
 amiss| `bed+needle`| amiss("f10") | Tuck operation at `bed+needle` without using yarn. 
 pause| None | pause() | Pause machine when instruction is encountered
 comment| String | comment("This is a \n multi-line comment") | Insert comments into knitout file
+addRawOperation| String | addRawOperation("your knitout inst string") | Escape hatch to directly inject knitout code  
+
 
 See [knitiout extensions](https://textiles-lab.github.io/knitout/extensions.html) for extensions that can be added as 'headers'. See [knitout specification](https://textiles-lab.github.io/knitout/knitout.html) for further details.
 
