@@ -265,6 +265,23 @@ Writer.prototype.stitchNumber = function (stitchNumber) {
 	this._operations.push('x-stitch-number ' + stitchNumber.toString());
 };
 
+Writer.prototype.fabricPresser = function (presserMode){
+	
+	if(presserMode === 'auto'){
+		this._operations.push('x-presser-mode auto');
+	}
+	else if(presserMode === 'on'){
+		this._operations.push('x-presser-mode on');
+	}
+	else if(presserMode === 'off'){
+		this._operations.push('x-presser-mode off');
+	}
+	else{
+		console.warn('Ignoring presser mode extension, unknown mode ' + presserMode + '. Valid modes: on, off, auto');
+	}
+}
+
+
 Writer.prototype.rack = function(rack) {
 
 	if (!(isFiniteNumber(rack))) {

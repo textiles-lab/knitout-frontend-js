@@ -10,10 +10,9 @@ k.addHeader('Gauge','15');
 var height = 10;
 var width = 10;
 var carrier = "6";
-
+k.fabricPresser("auto");
 // bring in carrier using yarn inserting hook
 k.inhook(carrier); 
-
 // tuck on alternate needles to cast on
 for (var s=width; s>0; s--) {
 	if (s%2 == 0) {
