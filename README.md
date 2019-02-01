@@ -51,6 +51,7 @@ out | `carriers` | out("6") | Take out yarn carrier
 outhook | `carriers` | outhook("5") | Take out yarn carrier with yarn inserting hook
 stitch | `before`(Number) `after`(Number) | stitch(25,40) | Before forming the loop, pull needle by `before` machine units, after forming the loop by `after` machine units. *Not well-supported by the back-end currently*.
 stitchNumber|`index`(Number)  | stitchNumber(5) | Explicit function for using stitch number extension that reads stitch values at `index` from a table. See [extensions](https://textiles-lab.github.io/knitout/extensions.html) for details.
+fabricPresser|`mode`(String)  | fabricPresser('auto') | Explicit function for using fabric presser extension. Valid modes include 'auto', 'on', 'off'. See [extensions](https://textiles-lab.github.io/knitout/extensions.html) for details.
 rack | `rack value`(Number) | rack(1) | Translate the back bed relative to the front bed by `rack value` needle units. Fractional values are legal and may be supported by the machine.
 tuck | `direction`,`bed+needle`,`carriers` | tuck("+","f10","B") | Tuck on `bed` at `needle` using `carriers` in `direction` direction. 
 knit | `direction`,`bed+needle`,`carriers` | knit("+","f10","B") | Knit on `bed` at `needle` using `carriers` in `direction` direction. 
