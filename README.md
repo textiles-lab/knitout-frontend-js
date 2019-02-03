@@ -43,7 +43,7 @@ All knitout opcodes are supported as a front-end function. Currently, the fronte
 
 Function | Arguments | Example | Description
 --- | --- | --- | ---
-addHeader | `name`(String),`value`(String) |  addHeader('Machine', 'SWGXYZ')| Add header information as name,value pairs. This is also used for including [extensions](https://textiles-lab.github.io/knitout/extensions.html).
+addHeader | `name`(String),`value`(String) |  addHeader('Machine', 'SWGXYZ')| Add header information as name,value pairs. 
 in  | `carriers` | in("5") | Bring in yarn carriers
 inhook | `carriers` | inhook("B") | Bring in yarn carriers using the yarn inserting hook
 releasehook    | `carriers` | releasehook("5") | Release the yarn inserting hook used to bring in the given yarn carriers
