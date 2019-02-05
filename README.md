@@ -57,7 +57,7 @@ tuck | `direction`,`bed+needle`,`carriers` | tuck("+","f10","B") | Tuck on `bed`
 knit | `direction`,`bed+needle`,`carriers` | knit("+","f10","B") | Knit on `bed` at `needle` using `carriers` in `direction` direction. 
 xfer | `from bed+needle`,`to bed+needle` | xfer("f10","b10") | Transfer loops from `from bed` at `needle` to  `to bed` at `needle`. 
 miss | `direction`,`bed+needle`,`carriers` | miss("+","f10","B") | Miss on `bed` at `needle` using `carriers` in `direction` direction i.e., perform carrier motion without knitting
-split| `direction`,`from bed+needle`,`to bed+needle`, `carriers` | split("+","f10", "b10", "B") | Pull a loop from `from bed+needle` and transfer old loops to `to bed+needle` in   `direction` using `carriers`. *Not supported by the back-end currently*. 
+split| `direction`,`from bed+needle`,`to bed+needle`, `carriers` | split("+","f10", "b10", "B") | Pull a loop from `from bed+needle` and transfer old loops to `to bed+needle` in   `direction` using `carriers`. 
 drop| `bed+needle`| drop("f10") | Drop loops from `bed+needle`.
 amiss| `bed+needle`| amiss("f10") | Tuck operation at `bed+needle` without using yarn. 
 pause| None | pause() | Pause machine when instruction is encountered
@@ -65,6 +65,6 @@ comment| String | comment("This is a \n multi-line comment") | Insert comments i
 addRawOperation| String | addRawOperation("your knitout inst string") | Escape hatch to directly inject knitout code  
 
 
-See [knitiout extensions](https://textiles-lab.github.io/knitout/extensions.html) for extensions that can be added as 'headers'. See [knitout specification](https://textiles-lab.github.io/knitout/knitout.html) for further details.
+See [knitout specification](https://textiles-lab.github.io/knitout/knitout.html) for further details.
 
 See hello_world.js for example usage.
