@@ -210,7 +210,7 @@ Writer.prototype.releasehook = function(...args){
 		if (!(cn in this.carriers)) {
 			throw new Error("Carrier '" + cn + "' isn't in.");
 		}
-		if (this.carriers[cn].hook) {
+		if (!this.carriers[cn].hook) {
 			throw new Error("Carrier '" + cn + "' isn't in the hook.");
 		}
 		this.carriers[cn].hook = false;
