@@ -2,6 +2,10 @@
 
 // basic writer
 var Writer = function(opts){
+	//public data:
+	this.carriers = {}; //names of all currently active carriers
+	this.needles = {}; //names of all currently-holding-loops needles
+	this.racking = 0; //current racking value
 
 	//private data:
 	this._carriers = []; //array of carrier names, front-to-back order
@@ -14,10 +18,10 @@ var Writer = function(opts){
 		console.warn("WARNING: options object passed to knitout.Writer does not contain a 'carriers' member. Will assume a default carrier layout (a single carrier named \"A\")");
 		this._carriers = ["A"];
 	} else {
-		if (!Array.isArray(opts.carriers)) throw "opts.carriers should be an array of carrier names";
+		if (!Array.isArray(opts.carriers)) throw new Error("opts.carriers should be an array of carrier names");
 		opts.carriers.forEach((name) => {
 			if (!(typeof(name) === 'string' && name.indexOf(' ') === -1)) {
-				throw "Carrier names must be strings that do not contain the space character (' ').";
+				throw new Error("Carrier names must be strings that do not contain the space character (' ').");
 			}
 		});
 		this._carriers = opts.carriers.slice();
@@ -30,19 +34,19 @@ var Writer = function(opts){
 // function that queues header information to header list
 Writer.prototype.addHeader = function(name, value) {
 	if (name === undefined || value === undefined) {
-		throw "Writer.addHeader should be called with a name and a value";
+		throw new Error("Writer.addHeader should be called with a name and a value");
 	}
 
 	if (!(typeof(name) === 'string' && name.indexOf(': ') === -1)) {
-		throw "Header names must be strings that don't contain the sequence ': '";
+		throw new Error("Header names must be strings that don't contain the sequence ': '");
 	}
 	if (!(typeof(value) === 'string' && value.indexOf('\n') === -1)) {
-		throw "Header values must be strings that do not contain the LF character ('\\n').";
+		throw new Error("Header values must be strings that do not contain the LF character ('\\n').");
 	}
 
 	//Check for valid headers:
 	if (name === "Carriers") {
-		throw "Writer.addHeader can't set Carriers header (use the 'carriers' option when creating the writer instead)."
+		throw new Error("Writer.addHeader can't set Carriers header (use the 'carriers' option when creating the writer instead).");
 	} else if (name === "Machine") {
 		//no restrictions on value
 	} else if (name === "Gauge") {
@@ -70,32 +74,6 @@ Writer.prototype.addRawOperation = function( operation ){
 	this._operations.push(operation);
 };
 
-// helper to return carriers as a string
-let getCarriers = function(carriers){
-
-	if ( carriers === undefined ) return "";
-	
-	checkCarriers(carriers);
-	
-	return carriers.join(" ");
-	// returns a string of carriers
-};
-
-// helper to return bed-needle as a string
-let getBedNeedle = function(at){
-	
-	checkBedNeedle(at);
-	
-	if(  typeof(at) === 'string' ){
-		return at;
-	}
-	else {
-		let at_arr = Object.keys(at).map(function (key) { return at[key]; });
-		return at_arr[0] + at_arr[1].toString();
-	}
-	// returns a string of bed-needle
-};
-
 //helpers to extract parameters from argument arrays:
 // (these remove the extracted arguments from the start of the array and throw on errors)
 
@@ -104,10 +82,10 @@ let getBedNeedle = function(at){
 function shiftDirection(args) {
 	console.assert(Array.isArray(args));
 	if (args.length === 0) {
-		throw "Direction missing.";
+		throw new Error("Direction missing.");
 	}
 	if (!(args[0] === '+' || args[0] === '-')) {
-		throw "Direction should be '+' or '-'.";
+		throw new Error("Direction should be '+' or '-'.");
 	}
 	let dir = args.shift();
 	return dir;
@@ -121,13 +99,13 @@ const BedRegex = /^[fb]s?$/;
 function shiftBedNeedle(args) {
 	console.assert(Array.isArray(args));
 	if (args.length === 0) {
-		throw "Needle missing.";
+		throw new Error("Needle missing.");
 	}
 	let bed, needle;
 	//case: bed string, needle number:
 	if (typeof(args[0]) === 'string' && BedRegex.test(args[0])) {
 		if (args.length < 2 || !Number.isInteger(args[1])) {
-			throw "Expecting bed name to be followed by a needle number.";
+			throw new Error("Expecting bed name to be followed by a needle number.");
 		}
 		bed = args.shift();
 		needle = args.shift();
@@ -135,7 +113,7 @@ function shiftBedNeedle(args) {
 	} else if (typeof(args[0]) === 'string') {
 		let m = args[0].match(BedNeedleRegex);
 		if (m === null) {
-			throw "String '" + args[0] + "' does not look like a compound bed+needle string.";
+			throw new Error("String '" + args[0] + "' does not look like a compound bed+needle string.");
 		}
 		bed = m[1];
 		needle = parseInt(m[2]);
@@ -143,7 +121,7 @@ function shiftBedNeedle(args) {
 	//case: two-member array ["fs", 2]
 	} else if (Array.isArray(args[0])) {
 		if (!( args[0].length === 2 && typeof(args[0][0]) === 'string' && BedRegex.test(args[0][0]) && Number.isInteger(args[0][1]) )) {
-			throw "Bed+needle array should look like [\"f\", 12].";
+			throw new Error("Bed+needle array should look like [\"f\", 12].");
 		}
 		bed = args[0][0];
 		needle = args[0][1];
@@ -151,16 +129,16 @@ function shiftBedNeedle(args) {
 	//case: object {bed:"fs", needle:5}
 	} else if (typeof(args[0]) === 'object') {
 		if (!( 'bed' in args[0] && typeof(args[0].bed) === 'string' && BedRegex.test(args[0].bed) )) {
-			throw "Bed+needle object should have a 'bed' member string naming the bed.";
+			throw new Error("Bed+needle object should have a 'bed' member string naming the bed.");
 		}
 		if (!( 'needle' in args[0] && Number.isInteger(args[0].needle) )) {
-			throw "Bed+needle object should have a 'needle' member integer.";
+			throw new Error("Bed+needle object should have a 'needle' member integer.");
 		}
 		bed = args[0].bed;
 		needle = args[0].needle;
 		args.shift();
 	} else {
-		throw "Expecting bed+needle as name+number (\"fs\", 6), string (\"b-2\"), array ([\"f\", 6]), or object ({bed:\"bs\", needle:12})."
+		throw new Error("Expecting bed+needle as name+number (\"fs\", 6), string (\"b-2\"), array ([\"f\", 6]), or object ({bed:\"bs\", needle:12}). Got '" + JSON.stringify(args) + "'");
 	}
 	return {bed:bed, needle:needle};
 }
@@ -180,20 +158,25 @@ function shiftCarrierSet(args, carrierNames) {
 
 	carrierSet.forEach(function(name){
 		if (carrierNames.indexOf(name) === -1) {
-			throw "Invalid carrier name '" + name + "'";
+			throw new Error("Invalid carrier name '" + name + "'");
 		}
 	});
 
 	return carrierSet;
 }
 
-
 Writer.prototype.in = function(...args){
 
 	let cs = shiftCarrierSet(args, this._carriers);
 	if (cs.length === 0) {
-		throw "It doesn't make sense to 'in' on an empty carrier set.";
+		throw new Error("It doesn't make sense to 'in' on an empty carrier set.");
 	}
+	cs.forEach(function(cn){
+		if (cn in this.carriers) {
+			throw new Error("Carrier '" + cn + "' is already in.");
+		}
+		this.carriers[cn] = {hook:false};
+	}, this);
 
 	this._operations.push('in ' + cs.join(' '));
 
@@ -203,8 +186,14 @@ Writer.prototype.inhook = function(...args){
 	
 	let cs = shiftCarrierSet(args, this._carriers);
 	if (cs.length === 0) {
-		throw "It doesn't make sense to 'inhook' on an empty carrier set.";
+		throw new Error("It doesn't make sense to 'inhook' on an empty carrier set.");
 	}
+	cs.forEach(function(cn){
+		if (cn in this.carriers) {
+			throw new Error("Carrier '" + cn + "' is already in.");
+		}
+		this.carriers[cn] = {hook:true};
+	}, this);
 
 	this._operations.push('inhook ' + cs.join(' '));
 
@@ -215,8 +204,17 @@ Writer.prototype.releasehook = function(...args){
 
 	let cs = shiftCarrierSet(args, this._carriers);
 	if (cs.length === 0) {
-		throw "It doesn't make sense to 'releasehook' on an empty carrier set.";
+		throw new Error("It doesn't make sense to 'releasehook' on an empty carrier set.");
 	}
+	cs.forEach(function(cn){
+		if (!(cn in this.carriers)) {
+			throw new Error("Carrier '" + cn + "' isn't in.");
+		}
+		if (this.carriers[cn].hook) {
+			throw new Error("Carrier '" + cn + "' isn't in the hook.");
+		}
+		this.carriers[cn].hook = false;
+	}, this);
 
 	this._operations.push('releasehook ' + cs.join(' '));
 
@@ -226,8 +224,14 @@ Writer.prototype.out = function(...args){
 
 	let cs = shiftCarrierSet(args, this._carriers);
 	if (cs.length === 0) {
-		throw "It doesn't make sense to 'out' on an empty carrier set.";
+		throw new Error("It doesn't make sense to 'out' on an empty carrier set.");
 	}
+	cs.forEach(function(cn){
+		if (!(cn in this.carriers)) {
+			throw new Error("Carrier '" + cn + "' isn't in.");
+		}
+		delete this.carriers[cn];
+	}, this);
 
 	this._operations.push('out ' + cs.join(' '));
 
@@ -237,8 +241,14 @@ Writer.prototype.outhook = function(...args){
 
 	let cs = shiftCarrierSet(args, this._carriers);
 	if (cs.length === 0) {
-		throw "It doesn't make sense to 'outhook' on an empty carrier set.";
+		throw new Error("It doesn't make sense to 'outhook' on an empty carrier set.");
 	}
+	cs.forEach(function(cn){
+		if (!(cn in this.carriers)) {
+			throw new Error("Carrier '" + cn + "' isn't in.");
+		}
+		delete this.carriers[cn];
+	}, this);
 
 	this._operations.push('outhook ' + cs.join(' '));
 };
@@ -250,7 +260,7 @@ function isFiniteNumber( n ) {
 
 Writer.prototype.stitch = function(before, after) {
 	if (!(isFiniteNumber(before) && isFiniteNumber(after))) {
-		throw "Stitch L and T values must be finite numbers.";
+		throw new Error("Stitch L and T values must be finite numbers.");
 	}
 
 	this._operations.push('stitch ' + before.toString() + ' ' + after.toString());
@@ -259,7 +269,7 @@ Writer.prototype.stitch = function(before, after) {
 //note: extension!
 Writer.prototype.stitchNumber = function (stitchNumber) {
 	if (!(Number.isInteger(stitchNumber) && stitchNumber > 0)) {
-		throw "Stitch numbers are positive integer values."
+		throw new Error("Stitch numbers are positive integer values.");
 	}
 
 	this._operations.push('x-stitch-number ' + stitchNumber.toString());
@@ -285,8 +295,10 @@ Writer.prototype.fabricPresser = function (presserMode){
 Writer.prototype.rack = function(rack) {
 
 	if (!(isFiniteNumber(rack))) {
-		throw "Racking values must be finite numbers.";
+		throw new Error("Racking values must be finite numbers.");
 	}
+
+	this.racking = rack;
 
 	this._operations.push('rack ' + rack.toString());
 };
@@ -295,6 +307,12 @@ Writer.prototype.knit = function(...args) {
 	let dir = shiftDirection(args);
 	let bn = shiftBedNeedle(args);
 	let cs = shiftCarrierSet(args, this._carriers);
+
+	if (cs.length > 0) {
+		this.needles[bn.bed + bn.needle.toString()] = true;
+	} else {
+		delete this.needles[bn.bed + bn.needle.toString()];
+	}
 	
 	this._operations.push('knit ' + dir + ' ' + bn.bed + bn.needle.toString() + ' ' + cs.join(' '));
 };
@@ -303,6 +321,8 @@ Writer.prototype.tuck  = function(...args) {
 	let dir = shiftDirection(args);
 	let bn = shiftBedNeedle(args);
 	let cs = shiftCarrierSet(args, this._carriers);
+
+	this.needles[bn.bed + bn.needle.toString()] = true;
 	
 	this._operations.push('tuck ' + dir + ' ' + bn.bed + bn.needle.toString() + ' ' + cs.join(' '));
 };
@@ -313,6 +333,14 @@ Writer.prototype.split = function(...args) {
 	let to = shiftBedNeedle(args);
 	let cs = shiftCarrierSet(args, this._carriers);
 
+	if ((from.bed + from.needle.toString()) in this.needles) {
+		this.needles[to.bed + to.needle.toString()] = true;
+		delete this.needles[from.bed + from.needle.toString()];
+	}
+	if (cs.length > 0) {
+		this.needles[from.bed + from.needle.toString()] = true;
+	}
+
 	this._operations.push('split ' + dir + ' ' + from.bed + from.needle.toString() + ' ' + to.bed + to.needle.toString() + ' ' + cs.join(' '));
 };
 
@@ -322,7 +350,7 @@ Writer.prototype.miss = function(...args) {
 	let cs = shiftCarrierSet(args, this._carriers);
 
 	if (cs.length === 0) {
-		throw "It doesn't make sense to miss with no carriers.";
+		throw new Error("It doesn't make sense to miss with no carriers.");
 	}
 	
 	this._operations.push('miss ' + dir + ' ' + bn.bed + bn.needle.toString() + ' ' + cs.join(' '));
@@ -334,8 +362,10 @@ Writer.prototype.drop = function(...args) {
 	let bn = shiftBedNeedle(args);
 
 	if (args.length !== 0) {
-		throw "drop only takes a bed+needle";
+		throw new Error("drop only takes a bed+needle");
 	}
+
+	delete this.needles[bn.bed + bn.needle.toString()];
 	
 	this._operations.push('drop ' + bn.bed + bn.needle.toString());
 };
@@ -345,7 +375,7 @@ Writer.prototype.amiss = function(...args) {
 	let bn = shiftBedNeedle(args);
 
 	if (args.length !== 0) {
-		throw "amiss only takes a bed+needle";
+		throw new Error("amiss only takes a bed+needle");
 	}
 
 	this._operations.push('amiss ' + bn.bed + bn.needle.toString());
@@ -358,7 +388,12 @@ Writer.prototype.xfer = function(...args) {
 	let to = shiftBedNeedle(args);
 
 	if (args.length !== 0) {
-		throw "xfer only takes two bed+needles";
+		throw new Error("xfer only takes two bed+needles");
+	}
+
+	if ((from.bed + from.needle.toString()) in this.needles) {
+		this.needles[to.bed + to.needle.toString()] = true;
+		delete this.needles[from.bed + from.needle.toString()];
 	}
 	
 	this._operations.push('xfer ' + from.bed + from.needle.toString() + ' ' + to.bed + to.needle.toString());
