@@ -26,7 +26,6 @@ var Writer = function(opts){
 		});
 		this._carriers = opts.carriers.slice();
 	}
-
 	//build a 'carriers' header from the '_carriers' list:
 	this._headers.push(";;Carriers: " + this._carriers.join(" "));
 };
@@ -146,15 +145,43 @@ function shiftBedNeedle(args) {
 //shiftCarrierSet interprets the remaining contents of 'args' as an array of carrier names, and throws on error:
 // returns an array of carrier names, e.g., ["C", "A"].
 function shiftCarrierSet(args, carrierNames) {
-	console.assert(Array.isArray(args) && Array.isArray(carrierNames));
 	let carrierSet = [];
 	//carrier set as array, e.g., knit(..., ["A", "B"]):
 	if (args.length === 1 && Array.isArray(args[0])) {
 		carrierSet = args.shift().slice();
 	} else {
-	//carrier set as parameters, e.g., knit(..., "A", "B");
+		//carrier set as parameters, e.g., knit(..., "A", "B");
 		carrierSet = args.splice(0,args.length).slice();
 	}
+
+	// slightly ugly handling of various ways of typeing "A B", "A, B"
+	carrierSet.forEach(function(name, idx){
+		let space_split = name.split(" ");
+		let first = true;
+		space_split.forEach(function(s, sidx){
+			if(s == '') return;
+			if(first){
+				carrierSet[idx] = s;
+				first = false;
+			}
+			else carrierSet.push(s);
+		});
+	});
+
+	carrierSet.forEach(function(name, idx){
+		let comma_split = name.split(",");
+		let first = true;
+		comma_split.forEach(function(s, sidx){
+			if(s =='') return;
+			if(first) {
+				carrierSet[idx] = s;
+				first = false;
+			}
+			else carrierSet.push(s);
+		});
+
+	});
+
 
 	carrierSet.forEach(function(name){
 		if (carrierNames.indexOf(name) === -1) {
