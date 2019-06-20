@@ -67,4 +67,4 @@ addRawOperation| String | addRawOperation("your knitout inst string") | Escape h
 
 See [knitout specification](https://textiles-lab.github.io/knitout/knitout.html) for further details.
 
-See hello_world.js for example usage.
+See hello_world.js and sample.js for example usage. See carriers.js for additional carrier examples.

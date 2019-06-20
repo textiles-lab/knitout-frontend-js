@@ -1,0 +1,23 @@
+{
+  "name": "knitout",
+  "version": "1.0.1",
+  "description": "Handy writer of knitout in javascript",
+  "main": "knitout.js",
+  "scripts": {
+    "test": "node hello_world.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/textiles-lab/knitout-frontend-js.git"
+  },
+  "keywords": [
+    "knitout",
+    "knitting"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/textiles-lab/knitout-frontend-js/issues"
+  },
+  "homepage": "https://github.com/textiles-lab/knitout-frontend-js#readme"
+}

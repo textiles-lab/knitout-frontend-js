@@ -49,5 +49,5 @@ k.outhook(carrier);
 
 // write the knitout to a file called "out.k"
 k.write('out.k');
-
+console.log('wrote out.k')
 

@@ -1,0 +1,3 @@
+[submodule "knitout-api"]
+	path = knitout-api
+	url = git@github.com:textiles-lab/knitout-api.git
