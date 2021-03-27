@@ -4,6 +4,7 @@
   "description": "Handy writer of knitout in javascript",
   "main": "knitout.js",
   "scripts": {
+		"start": "node --",
     "test": "node hello_world.js"
   },
   "repository": {

@@ -1,5 +1,6 @@
 "use strict";
 
+let machine = null; //can set this as machine header value (if provided), and use it to warn about unsupported extensions
 // basic writer
 var Writer = function(opts){
 	//public data:
@@ -31,7 +32,7 @@ var Writer = function(opts){
 };
 
 // function that queues header information to header list
-Writer.prototype.addHeader = function(name, value) {
+Writer.prototype.addHeader = function (name, value) {
 	if (name === undefined || value === undefined) {
 		throw new Error("Writer.addHeader should be called with a name and a value");
 	}
@@ -47,11 +48,13 @@ Writer.prototype.addHeader = function(name, value) {
 	if (name === "Carriers") {
 		throw new Error("Writer.addHeader can't set Carriers header (use the 'carriers' option when creating the writer instead).");
 	} else if (name === "Machine") {
+		machine = value;
 		//no restrictions on value
 	} else if (name === "Gauge") {
-		//TODO: warn if value is not a string representing a number
+		if ((typeof(value) !== 'string' && !/^[0-9 ]+$/.test(value))) throw new Error(`Value of 'Gauge' header must be a string representing a number. Provided value: '${value}' is not valid.`);
 	} else if (name === "Position") {
-		//TODO: commit to a list of values, possibly warn on non-standard value
+		let supported_positions = ['Left', 'Center', 'Right', 'Keep'];
+		if (!supported_positions.includes(value)) throw new Error(`'Position' header must have one of the following values: ${supported_positions.join(', ')}. Provided value: '${value}' is not valid.`);
 	} else if (name.startsWith("Yarn-")) {
 		//check for valid carrier name, warn otherwise
 		let carrierName = name.substr(5);
@@ -293,7 +296,12 @@ Writer.prototype.stitch = function(before, after) {
 	this._operations.push('stitch ' + before.toString() + ' ' + after.toString());
 };
 
-//note: extension!
+//throw warning if ;;Machine: header is included & machine doesn't support extension
+function machineSupport(extension, supported) {
+	if (!machine.toUpperCase().includes(supported)) console.warn(`Warning: ${extension} is not supported on ${machine}. Including it anyway.`);
+}
+
+// --- extensions ---
 Writer.prototype.stitchNumber = function (stitchNumber) {
 	if (!(Number.isInteger(stitchNumber) && stitchNumber > 0)) {
 		throw new Error("Stitch numbers are positive integer values.");
@@ -302,8 +310,8 @@ Writer.prototype.stitchNumber = function (stitchNumber) {
 	this._operations.push('x-stitch-number ' + stitchNumber.toString());
 };
 
-Writer.prototype.fabricPresser = function (presserMode){
-	
+Writer.prototype.fabricPresser = function (presserMode) {
+	machineSupport('presser mode', 'SWG');
 	if(presserMode === 'auto'){
 		this._operations.push('x-presser-mode auto');
 	}
@@ -318,7 +326,63 @@ Writer.prototype.fabricPresser = function (presserMode){
 	}
 }
 
+Writer.prototype.visColor = function (hex, carrier) {
+	let warning = false;
+	if (arguments.length !== 2) {
+		warning = true;
+		console.warn(`Ignoring vis color extension, since it is meant to take 2 parameters: 1) #hexColorCode and 2) carrierNumber.`);
+	}
+	if (hex.charAt(0) !== '#') {
+		warning = true;
+		console.warn(`Ignoring vis color extension, since the first arg is meant to be a hex code to assign the given carrier. Expected e.g. #FF0000`);
+	}
+	if (this._carriers.indexOf(carrier) === -1) {
+		warning = true;
+		console.warn(`Ignoring vis color extension, since the second arg is meant to be the carrier number to which you are assigning the color. ${carrier} is not listed in the 'Carriers' header.`);
+	}
+	if (!warning) this._operations.push(`x-vis-color ${hex} ${carrier}`);
+}
 
+Writer.prototype.speedNumber = function (value) {
+	//TODO: check to make sure it's within the accepted range
+	if (!(Number.isInteger(value) && value > 0)) {
+		console.warn(`Ignoring speed number extension, since provided value: ${value} is not a positive integer.`);
+	} else this._operations.push(`x-speed-number ${value}`);
+};
+
+Writer.prototype.rollerAdvance = function (value) {
+	machineSupport('roller advance', 'KNITERATE');
+	//TODO: check to make sure it's within the accepted range
+	if (!Number.isInteger(value)) {
+		console.warn(`Ignoring roller advance extension, since provided value: ${value} is not an integer.`);
+	} else this._operations.push(`x-speed-number ${value}`);
+	let warning = false;
+	if (!warning) this._operations.push(`x-roller-advance ${value}`);
+};
+
+Writer.prototype.addRollerAdvance = function (value) {
+	machineSupport('add roller advance', 'KNITERATE');
+	//TODO: check to make sure it's within the accepted range
+	if (!Number.isInteger(value)) {
+		console.warn(`Ignoring add roller advance extension, since provided value: ${value} is not an integer.`);
+	} else this._operations.push(`x-add-roller-advance ${value}`);
+};
+
+Writer.prototype.carrierSpacing = function (value) {
+	machineSupport('carrier spacing', 'KNITERATE');
+	if (!(Number.isInteger(value) && value > 0)) {
+		console.warn(`Ignoring carrier spacing extension, since provided value: ${value} is not a positive integer.`);
+	} else this._operations.push(`x-carrier-spacing ${value}`);
+};
+
+Writer.prototype.carrierStoppingDistance = function (value) {
+	machineSupport('carrier stopping distance', 'KNITERATE');
+	if (!(Number.isInteger(value) && value > 0)) {
+		console.warn(`Ignoring carrier stopping distance extension, since provided value: ${value} is not a positive integer.`);
+	} else this._operations.push(`x-carrier-stopping-distance ${value}`);
+};
+
+// --- operations ---//
 Writer.prototype.rack = function(rack) {
 
 	if (!(isFiniteNumber(rack))) {

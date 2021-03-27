@@ -1,4 +1,5 @@
 knitout-api/
 .DS_Store
 .gitmodules
+.gitignore
 .git
