@@ -514,13 +514,18 @@ Writer.prototype.write = function(filename){
 	let version = ';!knitout-2';
 	let content = version + '\n' +
 		this._headers.join('\n') + '\n' + 
-		this._operations.join('\n') + '\n';
-	try{
-		let fs = require('fs');
-		fs.writeFileSync(filename, content); //default is utf8 
-	} 
-	catch(e){
-		console.warn("Can't load 'fs'. Did not write file.");
+		this._operations.join('\n');
+	if (typeof(filename) === 'undefined') {
+		console.warn("filename not passed to Writer.write; writing to stdout.");
+		console.log(content);
+	} else {
+		try{
+			let fs = require('fs');
+			fs.writeFileSync(filename, content + '\n'); //default is utf8 
+		} 
+		catch(e){
+			console.warn("Can't load 'fs'. Did not write file.");
+		}
 	}
 	return content; 
 };

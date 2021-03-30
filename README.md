@@ -21,7 +21,8 @@ for (let r = 0; r < 10; ++r) {
 
 k.out("B");
 
-k.write("out.k");
+k.write("out.k"); //write to file
+k.write(); //print to console
 ```
 
 When you create a ```Writer``` you are *required* to supply a "carriers" list in the options.
