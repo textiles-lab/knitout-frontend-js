@@ -1,10 +1,10 @@
 {
   "name": "knitout",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Handy writer of knitout in javascript",
   "main": "knitout.js",
   "scripts": {
-		"start": "node --",
+    "start": "node --",
     "test": "node hello_world.js"
   },
   "repository": {
