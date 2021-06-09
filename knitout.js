@@ -303,8 +303,8 @@ function machineSupport(extension, supported) {
 
 // --- extensions ---
 Writer.prototype.stitchNumber = function (stitchNumber) {
-	if (!(Number.isInteger(stitchNumber) && stitchNumber > 0)) {
-		throw new Error("Stitch numbers are positive integer values.");
+	if (!(Number.isInteger(stitchNumber) && stitchNumber >= 0)) {
+		throw new Error("Stitch numbers are non-negative integer values.");
 	}
 
 	this._operations.push('x-stitch-number ' + stitchNumber.toString());
@@ -345,8 +345,8 @@ Writer.prototype.visColor = function (hex, carrier) {
 
 Writer.prototype.speedNumber = function (value) {
 	//TODO: check to make sure it's within the accepted range
-	if (!(Number.isInteger(value) && value > 0)) {
-		console.warn(`Ignoring speed number extension, since provided value: ${value} is not a positive integer.`);
+	if (!(Number.isInteger(value) && value >= 0)) {
+		console.warn(`Ignoring speed number extension, since provided value: ${value} is not a non-negative integer.`);
 	} else this._operations.push(`x-speed-number ${value}`);
 };
 
