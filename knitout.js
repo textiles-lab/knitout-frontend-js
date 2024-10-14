@@ -72,7 +72,7 @@ Writer.prototype.addHeader = function (name, value) {
 // escape hatch to dump your custom instruction to knitout
 // if you know what you are doing
 Writer.prototype.addRawOperation = function( operation ){
-	console.warn("Warning: operation added to list as is(string), no error checking performed.");
+	console.warn("Warning: operation added to list as-is, no error checking performed.");
 	this._operations.push(operation);
 };
 
